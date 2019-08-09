@@ -120,5 +120,26 @@ public class Questions {
             .stream()
             .sorted(sortByNoOfCities.reversed())
             .collect(Collectors.toList());
+      
+      //Q8) Find the list of movies having the genres "Drama" and "Comedy" only
+      Map<Movie, List<String>> moviesAndGenres = new HashMap<>();
+      Predicate<Movie> containsDrama = movie -> movie.getGenres()
+            .stream()
+            .anyMatch(genre -> genre.getName().equals("Drama"));
+      Predicate<Movie> containsComedy = movie -> movie.getGenres()
+            .stream()
+            .anyMatch(genre -> genre.getName().equals("Comedy"));
+      Predicate<Movie> containsOnly2Genres = movie -> movie.getGenres().size() == 2;
+
+      List<Movie> q8Result = repository.getAllMovies()
+            .stream()
+            .filter(containsOnly2Genres.and(containsComedy.and(containsDrama)))
+            .collect(Collectors.toList());
+
+      //Q9) Group the movies by the year and list them
+      Map<Integer, String> groupedMoviesByYear = repository.getAllMovies()
+            .stream()
+            .collect(Collectors.groupingBy(Movie::getYear,
+                  Collectors.mapping(Movie::getTitle, Collectors.joining(","))));
    }
 }
